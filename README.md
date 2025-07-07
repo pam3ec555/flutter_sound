@@ -4,14 +4,6 @@
 - ## Flutter Sound user : your doc [is here](https://flutter-sound.canardoux.xyz/)
 - ## The CHANGELOG [is here](https://fs-doc.vercel.app/tau/CHANGELOG.html)
 
-## Flutter Sound stands with Ukraine
-
-![PeaceForUkraine](https://fs-doc.vercel.app/images/2-year-old-irish-girl-ukrainian.jpg)
-Peace for Ukraine
-
-![PrayForUkraine](https://fs-doc.vercel.app/images/banner.png)
-Pray for Ukraine
-
 ## Flutter Sound as a τ Project
 
 Flutter Sound is a set of libraries which deal with audio :

@@ -144,8 +144,15 @@
 
 - (void)openRecorder : (FlutterMethodCall*)call result:(FlutterResult)result
 {
-        [self openRecorderCompleted:  [NSNumber numberWithBool: YES]]; // It should not be here, but in flutter_sound_core !!!
-        result([NSNumber numberWithInt: [self getRecorderStatus]]);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self openRecorderCompleted:@(YES)]; // перемести внутрь фона
+
+        int status = [self getRecorderStatus];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            result(@(status));
+        });
+    });
 }
 
 - (void)reset: (FlutterMethodCall*)call result: (FlutterResult)result
@@ -219,27 +226,26 @@
         
         //bool _voiceProcessing = enableVoiceProcessing != 0;
 
-        bool b =
-        [
-                flautoRecorder startRecorderCodec: coder
-                toPath: path
-                channels: numChannels
-                interleaved: interleaved.boolValue
-                sampleRate: sampleRate
-                bitRate: bitRate
-                bufferSize: bufferSize
-                enableVoiceProcessing: enableVoiceProcessing.boolValue
-         ];
-        if (b)
-        {
-                result([NSNumber numberWithInt: [self getRecorderStatus]]);
-        } else
-        {
-                        [FlutterError
-                        errorWithCode:@"Audio Player"
-                        message:@"startPlayer failure"
-                        details:nil];
-        }
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        bool b = [flautoRecorder startRecorderCodec: coder
+                                                toPath: path
+                                        channels: numChannels
+                                        interleaved: interleaved.boolValue
+                                        sampleRate: sampleRate
+                                                bitRate: bitRate
+                                        bufferSize: bufferSize
+                                enableVoiceProcessing: enableVoiceProcessing.boolValue];
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                        if (b) {
+                        result(@([self getRecorderStatus]));
+                        } else {
+                        result([FlutterError errorWithCode:@"Audio Player"
+                                                message:@"startPlayer failure"
+                                                details:nil]);
+                        }
+                });
+        });
 
 }
 
